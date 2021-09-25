@@ -61,7 +61,7 @@
                         <td></td>
                         <td>{{customer.name}}</td>
                         <td>{{customer.phone}}</td>
-
+                        <td><a href="{% url 'customers.show' customer.id %}" class="btn btn-warning">view</a></td>
                     </tr>
                 {% endfor %}
             </table>
