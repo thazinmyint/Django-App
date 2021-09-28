@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 
 # Create your views here.
 from django.http import HttpResponse
 from accounts.models import *
-
+from accounts.forms import *
 def customers(request,id):
     # return HttpResponse(id)
     customer=Customer.objects.get(id=id)
@@ -34,3 +34,16 @@ def dashboard(request):
         'delivered':delivered,
         'pending':pending
     }) 
+
+def orderCreate(request):
+    form=OrderForm()
+    if request.method=="POST":
+        # print(request.POST)
+        form=OrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/');
+
+    return render(request,'accounts/order_form.html',{
+        'form':form
+    })
