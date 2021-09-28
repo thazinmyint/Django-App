@@ -1,9 +1,12 @@
+from django.forms.models import inlineformset_factory
 from django.shortcuts import render,redirect
 
 # Create your views here.
 from django.http import HttpResponse
+from django.forms import inlineformset_factory
 from accounts.models import *
 from accounts.forms import *
+
 def customers(request,id):
     # return HttpResponse(id)
     customer=Customer.objects.get(id=id)
@@ -35,17 +38,22 @@ def dashboard(request):
         'pending':pending
     }) 
 
-def orderCreate(request):
-    form=OrderForm()
+def orderCreate(request,customerId):
+    # return HttpResponse(customerId);
+    OrderFormSet=inlineformset_factory(Customer,Order,fields=('product','status'),extra=10)
+    customer=Customer.objects.get(id=customerId);
+    formset=OrderFormSet(instance=customer)
     if request.method=="POST":
         # print(request.POST)
-        form=OrderForm(request.POST)
-        if form.is_valid():
-            form.save()
+        formset=OrderFormSet(request.POST,instance=customer)
+
+        if formset.is_valid():
+            formset.save()
             return redirect('/');
 
     return render(request,'accounts/order_form.html',{
-        'form':form
+        'formset':formset,
+
     })
 
 def orderUpdate(request,orderId):
