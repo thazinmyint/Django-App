@@ -6,16 +6,20 @@ from django.http import HttpResponse
 from django.forms import inlineformset_factory
 from accounts.models import *
 from accounts.forms import *
-
+from .filters import *
+from django.contrib.auth.forms import UserCreationForm
 def customers(request,id):
     # return HttpResponse(id)
     customer=Customer.objects.get(id=id)
     orders=customer.order_set.all()
     order_count=orders.count()
+    filterObj=OrderFilter(request.GET,queryset=orders)
+    orders=filterObj.qs
     return render(request,'accounts/customers.html',{
         'customer':customer,
         'orders':orders,
-        'order_count':order_count
+        'order_count':order_count,
+        'filterObj':filterObj
     }) 
 
 def products(request):
@@ -42,7 +46,7 @@ def orderCreate(request,customerId):
     # return HttpResponse(customerId);
     OrderFormSet=inlineformset_factory(Customer,Order,fields=('product','status'),extra=10)
     customer=Customer.objects.get(id=customerId);
-    formset=OrderFormSet(instance=customer)
+    formset=OrderFormSet(instance=customer,queryset=Order.objects.none())
     if request.method=="POST":
         # print(request.POST)
         formset=OrderFormSet(request.POST,instance=customer)
@@ -79,4 +83,15 @@ def orderDelete(request,orderId):
 
     return render(request,'accounts/order_delete.html',{
         'order':order
+    })
+
+def register(request):
+    form=RegisterForm()
+    if request.method=="POST":
+        form=RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    return render(request,'accounts/register.html',{
+        'form':form
     })
