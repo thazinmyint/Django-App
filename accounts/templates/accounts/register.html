@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 {% block content %}
     <form action="" method="POST">
-    {% csrf_token %}
+        {% csrf_token %}
         {% for input in form %}
             <div class="mb-3">
                 {{input.label}}
