@@ -1,3 +1,4 @@
+from accounts.decorators import authenicated_user
 from django.forms.models import inlineformset_factory
 from django.shortcuts import render,redirect
 
@@ -9,7 +10,9 @@ from accounts.forms import *
 from .filters import *
 from django.contrib.auth import authenticate,login, logout
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='/login')
 def customers(request,id):
     # return HttpResponse(id)
     customer=Customer.objects.get(id=id)
@@ -24,12 +27,14 @@ def customers(request,id):
         'filterObj':filterObj
     }) 
 
+@login_required(login_url='/login')
 def products(request):
     products=Product.objects.all()
     return render(request,'accounts/products.html',{
         'products':products
     }) 
 
+@login_required(login_url='/login')
 def dashboard(request):
     customers=Customer.objects.all()
     orders=Order.objects.all()
@@ -44,6 +49,7 @@ def dashboard(request):
         'pending':pending
     }) 
 
+@login_required(login_url='/login')
 def orderCreate(request,customerId):
     # return HttpResponse(customerId);
     OrderFormSet=inlineformset_factory(Customer,Order,fields=('product','status'),extra=10)
@@ -62,6 +68,7 @@ def orderCreate(request,customerId):
 
     })
 
+@login_required(login_url='/login')
 def orderUpdate(request,orderId):
     order=Order.objects.get(id=orderId);
     
@@ -77,6 +84,7 @@ def orderUpdate(request,orderId):
         'form':form
     })
 
+@login_required(login_url='/login')
 def orderDelete(request,orderId):
     order=Order.objects.get(id=orderId);
     if request.method=="POST":
@@ -86,7 +94,7 @@ def orderDelete(request,orderId):
     return render(request,'accounts/order_delete.html',{
         'order':order
     })
-
+@authenicated_user
 def register(request):
     form=RegisterForm()
     if request.method=="POST":
@@ -98,6 +106,7 @@ def register(request):
         'form':form
     })
 
+@authenicated_user
 def userLogin(request):
     if request.method=="POST":
         username=request.POST['username']
