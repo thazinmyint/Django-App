@@ -1,4 +1,4 @@
-from accounts.decorators import authenicated_user,admin_only
+from accounts.decorators import authenicated_user,admin_only,allowed_roles
 from django.forms.models import inlineformset_factory
 from django.shortcuts import render,redirect
 
@@ -54,6 +54,7 @@ def dashboard(request):
     }) 
 
 @login_required(login_url='/login')
+@allowed_roles(roles=['admin'])
 def orderCreate(request,customerId):
     # return HttpResponse(customerId);
     OrderFormSet=inlineformset_factory(Customer,Order,fields=('product','status'),extra=10)
