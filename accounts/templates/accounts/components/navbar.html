@@ -18,7 +18,11 @@
         </div>
         {% if request.user.is_authenticated %}
         <div class="text-white">
-            <span class="me-3">{{ request.user.username }}</span>
+            <a href="{% url 'customers.customer_profile_setting' %}">
+                <img src="/{{request.user.customer.profile_pic}}" alt="" width="60px" height="60px" 
+                style="border-radius: 50%;" class="me-3">
+                <span class="me-3">{{ request.user.username }}</span>
+            </a>
             <a href="{% url 'logout' %}">logout</a>
         </div>
         {% else %}

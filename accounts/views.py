@@ -27,6 +27,18 @@ def customer_profile(request):
         'pending':pending
     })
 
+def customer_profile_setting(request):
+    form=CustomerProfile(instance=request.user.customer)
+    if request.method=='POST':
+        form=CustomerProfile(request.POST,request.FILES,instance=request.user.customer)
+        if form.is_valid:
+            form.save()
+            return redirect('/customer_profile')
+
+    return render(request,'accounts/profile_setting.html',{
+        'form':form
+    })
+
 @login_required(login_url='/login')
 @allowed_roles(roles=['admin'])
 def customers(request,id):
@@ -134,6 +146,8 @@ def register(request):
     return render(request,'accounts/register.html',{
         'form':form
     })
+
+    
 
 @authenicated_user
 def userLogin(request):
