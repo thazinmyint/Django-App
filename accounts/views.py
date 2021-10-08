@@ -126,6 +126,8 @@ def register(request):
             gp=Group.objects.get(name='customer')
             user.groups.add(gp)
 
+            #create customer profile for user
+            Customer.objects.create(user=user)
             #login user
             login(request,user)
             return redirect('/')
