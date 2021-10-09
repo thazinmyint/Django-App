@@ -127,6 +127,7 @@ def orderDelete(request,orderId):
     return render(request,'accounts/order_delete.html',{
         'order':order
     })
+
 @authenicated_user
 def register(request):
     form=RegisterForm()
@@ -140,8 +141,6 @@ def register(request):
     return render(request,'accounts/register.html',{
         'form':form
     })
-
-    
 
 @authenicated_user
 def userLogin(request):
